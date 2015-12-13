@@ -7,7 +7,19 @@ var Actions = require('react-native-router-flux').Actions;
 
 
 class TabView extends React.Component {
+  dopop() {
+    this.state.parentNavigator.pop();
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState({parentNavigator: newProps.navigator.parentNavigator});
+  }
+  componentWillMount() {
+
+    this.setState({parentNavigator: this.props.navigator.parentNavigator});
+    console.log("ComponentWillMount props, state", this.props, this.state);
+  }
     render(){
+      console.log("TabView parent routes:", this.props.navigator.parentNavigator.getCurrentRoutes());
         return (
             <View style={styles.container}>
                 <Text>Tab {this.props.title}</Text>
