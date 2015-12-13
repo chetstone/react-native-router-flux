@@ -23,7 +23,7 @@ class TabContainer extends React.Component {
       console.log("Props", this.props);
         return (
           <Router footer={TabBar} showNavigationBar={false}>
-              <Route name="tab1" schema="tab" title="Tab #1" >
+              <Route name="tab1"  type="switch" icon={TabIcon} title="Tab #1" >
                   <Router>
                       <Route name="tab1_1" component={TabView} title="Tab #1_1" />
                       <Route name="tab1_2" component={TabView} title="Tab #1_2" />
