@@ -1,16 +1,17 @@
 # react-native-router-flux
 
 [![Join the chat at https://gitter.im/aksonov/react-native-router-flux](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/aksonov/react-native-router-flux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-React Native Router Actions based on exNavigator (https://github.com/exponentjs/ex-navigator)
 
-## Why?
-- Use Actions to replace/push/pop screens with easy syntax like Actions.login for navigation to login screen
-- Forget about passing navigator object to all React elements, use actions from anywhere in your UI code.
-- Configure all of your screens ("routes") once (define animations, nav bars, etc.), at one place and then just use short actions commands. For example if you use some special animation for Login screen, you don't need to code it anywhere where an user should be redirected to login screen.
-- Use route "schemas" to define common property for some screens. For example some screens are "modal" (i.e. have animation from bottom and have Cancel/Close nav button), so you could define group for them to avoid any code repeatition.
-- Hide nav bar for some screens easily
-- Use built-in tab bar for some screens (see demo)
-- Nested Navigators are supported (i.e. separate navigator for each tab view inside root navigator). push/pop actions will automatically use latest navigator.
+A router/navigation component for React Native based on [exponentJS](https://github.com/exponentjs/ex-navigator).
+
+## Main features
+
+- Intuitive declarative syntax for specifying your entire router hierarchy in one place.
+- Uses flux philosophy: Switch routes by calling Actions anywhere in your code --- no need to pass down router state in props to all your components.
+- Supports nested routers
+- Built-in customizable Tab bar and navigation bar
+- Schema components can define common properties to be used by multiple Routes.
+
 
 ## Redux or other Flux support
 The component doesn't depend from any Flux implementation and allows to intercept all route actions by adding Actions.onPush/onReplace/onPop handlers from your store(s).
