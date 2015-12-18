@@ -1,0 +1,36 @@
+{
+  "name": "react-native-router-flux",
+  "version": "1.0.9",
+  "description": "React Native Router using Flux architecture",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "react-native",
+    "react-native-router",
+    "react-components",
+    "react-component",
+    "ios",
+    "android",
+    "flux",
+    "router",
+    "navigation"
+  ],
+  "author": {
+    "name": "Pavlo Aksonov",
+    "email": "akso.nov@gmail.com",
+    "url": "http://aksonov.com"
+  },
+  "license": "ISC",
+  "maintainers": [
+    {
+      "name": "aksonov",
+      "email": "pavlo.aksonov@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "@exponent/react-native-navigator": "^0.3.5",
+    "react-native-tabs": "^0.1.8"
+  }
+}
