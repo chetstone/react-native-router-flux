@@ -7,15 +7,16 @@ A router/navigation component for React Native based on [exponentJS](https://git
 ## Main features
 
 - Intuitive declarative syntax for specifying your entire router hierarchy in one place.
-- Uses flux philosophy: Switch routes by calling Actions anywhere in your code --- no need to pass down router state in props to all your components.
+- Uses flux philosophy: Switch routes by calling Actions anywhere in your code&mdash; no need to pass down router state in props to all your components.
 - Supports nested routers
 - Built-in customizable Tab bar and navigation bar
 - Schema components can define common properties to be used by multiple Routes.
 
-
-## Redux or other Flux support
-The component doesn't depend from any Flux implementation and allows to intercept all route actions by adding Actions.onPush/onReplace/onPop handlers from your store(s).
-If handler returns false route action is ignored. For Redux Don't forget to 'connect' your component to your store.
+ *Note: I am removing the following section temporarily because it is not clear at the moment how to link to flux/redux*
+ 
+##~~Redux or other Flux support~~
+~~The component doesn't depend from any Flux implementation and allows to intercept all route actions by adding Actions.onPush/onReplace/onPop handlers from your store(s).~~
+~~If handler returns false route action is ignored. For Redux Don't forget to 'connect' your component to your store.~~
 
 
 ## Example
@@ -117,14 +118,53 @@ module.exports = Launch;
 
 ## Getting started
 1. `npm install react-native-router-flux --save`
-2. In top-level index.js:
-    * Define Route for each app screen. Its 'type' attribute is 'push' by default, but you also could define 'replace', so navigator will replace current route with new route.
-    'switch' type represents tab screen. 'component' attribute is React component class which will be created for this route and all route attributes will be passed to it.
-Instead of defining 'component' class you could define any child (one) you want to be used for that route (even one more Router)
-'wrapRouter' - adds Router child for this Route (so defines own navigator for the route). 'name' is unique name of Route.
-All other attributes will be passed to scene class.
-
-    * If some your Routes have common attributes, you may define Schema element and just use 'schema' attribute for 'route'
-3. In any app screen:
+2. At the top level in `index.ios.js` or `index.android.js`:
+    * Start with a Router component. Its children can be Route, Schema or Router (for nested routers).
+    * Define a Route for each app screen. Its `type` attribute is `push` by default, but you also could use `replace`, so the navigator will replace the current route with the new route. The `switch` type is used tab screens.
+    * See below for list of props (required and optional)
+    * If some of your Routes have common properties, you may define a Schema element and refer to it using the `schema` prop in your Route specifications.
+3. In any screen in your app:
     * var {Actions} = require('react-native-router-flux');
-    * Actions.ACTION_NAME(PARAMS) will call appropriate action and params will be passed to the route
+    * Actions.ACTION_NAME(PARAMS) will call the appropriate action and optional params will be passed to the route. 
+    * ACTION_NAME can be `pop`, or simply the name of a Route, as in `Actions.login`
+    * PARAMS is a single object whose properties will be passed as props to the Route (??? Doesn't seem to work in Example)
+
+## Props of router components:
+
+### Router
+
+* showNavigationBar (optional)
+:    `true` or `false`
+
+* hideNavBar (optional, deprecated)
+:    inverse of showNavigationBar
+
+* initialRoutes (optional) 
+:    array of Route names used to initialize the route stack. e.g., `['login', 'launch']`. Defaults to a single element, the name of the first child Route, unless one of the Route children defines an `initial={true}` prop.
+
+* footer (optional)
+:     a component to be used as the footer on all routes within the router. Typically used as a Tab bar.
+
+* header (optional)
+:     a component to be used as the header on all routes within the router. Typically used as a custom navigation bar.
+
+* navigationBarStyle (optional)
+:     passed on to exNavigator to style the navigation bar.
+
+* other
+:     any other props are passed on to the header, footer and exNavigator
+
+### Route
+
+* name (required)
+:  name of the route, which must be unique across all nested routers. Used as the Action name.
+
+* component (optional)
+: the React component class which will be created for this route. All route attributes will be passed to it.
+Instead of defining a `component` you can alternatively define a single child of the route. This child could possibly be a nested Router.
+
+* wrapRouter
+: adds a Router child for this Route (and thus defines a nested navigator for the route). 
+
+* other
+: all other props will be passed to the scene class
