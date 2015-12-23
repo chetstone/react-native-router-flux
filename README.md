@@ -1,20 +1,16 @@
 # react-native-router-flux
 
 [![Join the chat at https://gitter.im/aksonov/react-native-router-flux](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/aksonov/react-native-router-flux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-React Native Router Actions based on exNavigator (https://github.com/exponentjs/ex-navigator)
 
-## Why?
-- Use Actions to replace/push/pop screens with easy syntax like Actions.login for navigation to login screen
-- Forget about passing navigator object to all React elements, use actions from anywhere in your UI code.
-- Configure all of your screens ("routes") once (define animations, nav bars, etc.), at one place and then just use short actions commands. For example if you use some special animation for Login screen, you don't need to code it anywhere where an user should be redirected to login screen.
-- Use route "schemas" to define common property for some screens. For example some screens are "modal" (i.e. have animation from bottom and have Cancel/Close nav button), so you could define group for them to avoid any code repeatition.
-- Hide nav bar for some screens easily
-- Use built-in tab bar for some screens (see demo)
-- Nested Navigators are supported (i.e. separate navigator for each tab view inside root navigator). push/pop actions will automatically use latest navigator.
+A router/navigation component for React Native based on [ExNavigator](https://github.com/exponentjs/ex-navigator).
 
-## Redux or other Flux support
-The component doesn't depend from any Flux implementation and allows to intercept all route actions by adding Actions.onPush/onReplace/onPop handlers from your store(s).
-If handler returns false route action is ignored. For Redux Don't forget to 'connect' your component to your store.
+## Main features
+
+- Intuitive declarative syntax for specifying your entire router hierarchy in one place
+- Uses flux philosophy: Switch routes by calling Actions anywhere in your code&mdash; no need to pass down router state in props to all your components
+- Supports nested routers
+- Built-in customizable Tab bar and navigation bar
+- Schema components can define common properties to be used by multiple Routes
 
 
 ## Example
@@ -116,14 +112,113 @@ module.exports = Launch;
 
 ## Getting started
 1. `npm install react-native-router-flux --save`
-2. In top-level index.js:
-    * Define Route for each app screen. Its 'type' attribute is 'push' by default, but you also could define 'replace', so navigator will replace current route with new route.
-    'switch' type represents tab screen. 'component' attribute is React component class which will be created for this route and all route attributes will be passed to it.
-Instead of defining 'component' class you could define any child (one) you want to be used for that route (even one more Router)
-'wrapRouter' - adds Router child for this Route (so defines own navigator for the route). 'name' is unique name of Route.
-All other attributes will be passed to scene class.
-
-    * If some your Routes have common attributes, you may define Schema element and just use 'schema' attribute for 'route'
-3. In any app screen:
+2. At the top level in `index.ios.js` or `index.android.js`:
+    * Start with a Router component. Its children can be Route, Schema or Router (for nested routers).
+    * Define a Route for each app screen. Its `type` attribute is `push` by default, but you also could use `replace`, so the navigator will replace the current route with the new route. The `switch` type is used for tab screens.
+    * See below for list of props (required and optional)
+    * If some of your Routes have common properties, you may define a Schema element and refer to it using the `schema` prop in your Route specifications.
+3. In any screen in your app:
     * var {Actions} = require('react-native-router-flux');
-    * Actions.ACTION_NAME(PARAMS) will call appropriate action and params will be passed to the route
+    * Actions.ACTION_NAME(PARAMS) will call the appropriate action and optional params will be passed to the route.
+    * ACTION_NAME can be `pop`, or simply the name of a Route, as in `Actions.login`
+    * PARAMS is a single object whose properties will be passed as props to the Route.
+
+## Props of router components:
+
+### Router
+
+* `showNavigationBar` (optional)
+:    `true` or `false`
+
+* `hideNavBar` (optional, deprecated???)
+:    inverse of showNavigationBar
+
+* `initialRoutes` (optional)
+:    array of Route names used to initialize the route stack. e.g., `['login', 'launch']`. Defaults to a single element, the name of the first child Route, unless one of the Route children defines an `initial={true}` prop.
+
+* `footer` (optional)
+:     a component to be used as the footer on all routes within the router. Typically used as a tab bar.
+
+* `header` (optional)
+:     a component to be used as the header on all routes within the router. Typically used as a custom navigation bar.
+
+* `navigationBarStyle` (optional)
+:     passed on to exNavigator to style the navigation bar.
+
+* *other*
+:     any other props are passed on to the header, footer and exNavigator
+
+### Route
+
+* `name` (required)
+:  name of the route, which must be unique across all nested routers. Used as the Action name.
+
+* `type` (optional)
+: the method used to switch to the route. One of `push`, `replace`, or `switch`. Default is `push`.
+
+* `title` (optional)
+: String used as main title in the default Navigation bar. Also the title of the previous route appears in the `Back` button. Default is the empty string.
+
+* `component` (optional)
+: the React component class which will be created for this route. All route attributes will be passed to it. Instead of defining a `component` you can alternatively define a single child of the route. This child could possibly be a nested Router.
+
+* `sceneConfig` (optional)
+: a function that defines scene animations for this route. Generally it will be one of the functions defined by [React Native Navigator](https://facebook.github.io/react-native/docs/navigator.html#configurescene). Default is no animation.
+
+* `wrapRouter` (optional)
+: adds a Router child for this Route (and thus defines a nested navigator for the route).
+
+* `initial` (optional)
+: `Boolean`. Pushes this route on the top of the route stack, thus defining it as the route to be rendered at startup. If more than one route is defined as initial, the last one will be on the top of the stack and thus be rendered first.
+
+* `onEnter` (optional)
+: a function to be called when a Route is pushed. If this function returns a falsy value, the push is aborted.
+
+* `onLeave` (optional)
+: a function to be called when this Route loses focus.
+
+* `header`, `footer` (optional)
+: pass a header and/or footer component for this route.
+
+* `hideNavBar` (optional)
+: `Boolean`. Show or hide navigation bar for this route.
+
+* `navigationBarStyle`, `backButtonStyle`, `rightButtonStyle`, `rightButtonTextStyle` (optional)
+: styles for this route. 
+
+* `renderLeftButton`, `renderTitle`, `renderRightButton`, `renderBackButton` (optional)
+: Custom components for the navigation bar.
+
+* `onRight` (optional)
+: `Boolean`. Whether to show the right button in the navigation bar. Default is `false`
+
+* `rightTitle` (optional)
+: `String`. Title of the right button. If empty, the right button will not be shown.
+
+* *other*
+: all other props will be passed to the Route component
+
+### Schema
+
+* `name` (required)
+:  name of the schema. All schemas must be defined in the top-most Router, but can be used in nested Routers.
+
+* *other*
+: all other props will be inserted into any Route that refers to the schema using the `schema='schema_name` prop.
+
+## Other tips and tricks.
+
+Generally, it is advised to define your entire router hierarchy in one place. However, it is possible to define a nested Router in a subcomponent if you take care to pass a reference to the parent router through the your components to the nested router like this:
+
+```javascript
+class MySubComponent extends React.Component {
+    render() {
+       return (
+       <Router footer={TabBar}  navigator={this.props.navigator} schemas={this.props.schemas}>
+           <Route name='tab1'/>
+           <Route name='tab2'/>
+       </Router>
+       );
+    }
+}
+```
