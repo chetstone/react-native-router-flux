@@ -7,43 +7,13 @@ var Register = require('./components/Register');
 var Login = require('./components/Login');
 var Login2 = require('./components/Login2');
 var RNRF = require('react-native-router-flux');
-var {Route, Schema, Animations, Actions, TabBar} = RNRF;
+var {Router, Route, Schema, Animations, Actions, TabBar} = RNRF;
 var Error = require('./components/Error');
 var Home = require('./components/Home');
 var TabView = require('./components/TabView');
 var ReactNativeModalBox = require('./components/ReactNativeModalBox');
 
-// Redux stuff is optional
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
 
-function reducer(state = {}, action) {
-    switch (action.type) {
-        case Actions.BEFORE_ROUTE:
-            //console.log("BEFORE_ROUTE:", action);
-            return state;
-        case Actions.AFTER_ROUTE:
-            //console.log("AFTER_ROUTE:", action);
-            return state;
-        case Actions.AFTER_POP:
-            //console.log("AFTER_POP:", action);
-            return state;
-        case Actions.BEFORE_POP:
-            //console.log("BEFORE_POP:", action);
-            return state;
-        case Actions.AFTER_DISMISS:
-            //console.log("AFTER_DISMISS:", action);
-            return state;
-        case Actions.BEFORE_DISMISS:
-            //console.log("BEFORE_DISMISS:", action);
-            return state;
-        default:
-            return state;
-    }
-
-}
-let store = createStore(reducer);
-const Router = connect()(RNRF.Router);
 
 class TabIcon extends React.Component {
     render(){
@@ -61,9 +31,7 @@ class Header extends React.Component {
 
 export default class Example extends React.Component {
     render() {
-        // Provider is optional (if you want to use redux)
         return (
-            <Provider store={store}>
                 <Router hideNavBar={true} name="root">
                     <Schema name="modal" sceneConfig={Navigator.SceneConfigs.FloatFromBottom}/>
                     <Schema name="default" sceneConfig={Navigator.SceneConfigs.FloatFromRight}/>
@@ -103,7 +71,6 @@ export default class Example extends React.Component {
                     </Route>
                     <Route name="launch" header={Header} initial={true} component={Launch} wrapRouter={true} title="Launch" hideNavBar={true}/>
                 </Router>
-            </Provider>
-        );
+         );
     }
 }
